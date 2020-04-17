@@ -59,4 +59,18 @@ mean_steps_per_day
 median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
 median_steps_per_day
 
- 
+# Panel plot 
+#changing date to Date class
+
+df1$date <- as.Date(df1$date)
+
+df1$day <- ifelse(weekdays(df1$date) == "Saturday" | weekdays(df1$date) == "Sunday", "weekend", "weekday")
+
+avg1 <- df1 %>% group_by(interval, day) %>% summarize(Mean = mean(steps, na.rm = TRUE)) 
+avg1 %>% ggplot(aes(interval, Mean)) +
+    geom_line(col = "Purple") +
+    facet_wrap(vars(day),nrow = 2) +
+    xlab("Time of Day (24hr time)") +
+    ylab("Average Steps") +
+    ggtitle("Average Number of Steps per Time of Day") +
+    theme(plot.title = element_text(hjust = 0.5))

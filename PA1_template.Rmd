@@ -1,5 +1,7 @@
-*Loading and Preprocessing the Data*
---------------------------------------
+### Activity Monitoring Project ###
+
+**Loading and Preprocessing the Data**
+
 The data for the project was provided in a .zip file. The first step was to extract the file activity.csv.
 
 The data was then read into an R data frame using the following code.
@@ -8,6 +10,7 @@ The data was then read into an R data frame using the following code.
 df <- read.csv("activity.csv")
 ```
 
+**What is mean total number of steps taken per day?**  
 
 The total number of steps per day was calculated using the following code.
 ```{r message=FALSE, results='hide'}
@@ -17,7 +20,6 @@ library(tidyverse)
 ```{r}
 steps_per_day <- df %>% group_by(date) %>%
     summarize(Steps = sum(steps))
-steps_per_day
 print(steps_per_day,n = nrow(steps_per_day))
 ```
 
@@ -39,6 +41,8 @@ mean_steps_per_day
 median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
 median_steps_per_day
 ```
+
+**What is the average daily activity pattern?**
 
 The following time series plot shows the average number of steps taken per 5 minute interval.
 
@@ -64,6 +68,8 @@ The interval with the maximum number of steps was determined using the code belo
 avg$interval[which(avg$Mean == max(avg$Mean))]
 ```
 
+**Imputing missing values**  
+
 The total number of rows with missing steps data is calculated using the following code.
 
 ```{r}
@@ -81,7 +87,6 @@ The following is a histogram of steps per day
 ```{r}
 steps_per_day <- df1 %>% group_by(date) %>%
     summarize(Steps = sum(steps))
-steps_per_day
 steps_per_day %>% ggplot(aes(Steps)) +
     geom_histogram(binwidth = 1000, col = "Black", fill = "Orange") +
     ggtitle("Histogram of Steps per Day") + ylab("Frequency") +
@@ -99,5 +104,26 @@ median_steps_per_day
 ```
 
 Based on these numbers, imputing the NA values did not impact the mean or median values very much.
+
+**Are there differences in activity patterns between weekdays and weekends?**  
+
+A new factor variable was added to the data frame characterizing the day as a weekday or the weekend.
+
+```{r}
+df1$date <- as.Date(df1$date)
+df1$day <- ifelse(weekdays(df1$date) == "Saturday" | weekdays(df1$date) == "Sunday", "weekend", "weekday")
+```
+A panel plot was created showing the average steps per time of day for weekdays and weekends using the following code.
+
+```{r}
+avg1 <- df1 %>% group_by(interval, day) %>% summarize(Mean = mean(steps, na.rm = TRUE)) 
+avg1 %>% ggplot(aes(interval, Mean)) +
+    geom_line(col = "Purple") +
+    facet_wrap(vars(day),nrow = 2) +
+    xlab("Time of Day (24hr time)") +
+    ylab("Average Steps") +
+    ggtitle("Average Number of Steps per Time of Day") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
 
 
