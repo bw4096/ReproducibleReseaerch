@@ -88,7 +88,7 @@ steps_per_day %>% ggplot(aes(Steps)) +
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The mean steps per day and the median steps per day were calculated using the following code.
+The mean steps per day and the median steps per day, with imputed NAs, were calculated using the following code.
 
 ```{r}
 mean_steps_per_day <- steps_per_day %>% summarize(mean = mean(Steps, na.rm = TRUE))
@@ -97,4 +97,7 @@ mean_steps_per_day
 median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
 median_steps_per_day
 ```
+
+Based on these numbers, imputing the NA values did not impact the mean or median values very much.
+
 
