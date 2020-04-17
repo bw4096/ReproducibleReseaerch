@@ -9,7 +9,7 @@ df <- read.csv("activity.csv")
 ```
 
 
-The total number of steps per day was calculated using the following code
+The total number of steps per day was calculated using the following code.
 ```{r message=FALSE, results='hide'}
 library(tidyverse)
 ```
@@ -37,5 +37,29 @@ mean_steps_per_day
 
 median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
 median_steps_per_day
+```
+
+The following time series plot shows the average number of steps taken per 5 minute interval.
+
+```{r}
+avg <- df %>% group_by(interval) %>% summarize(Mean = mean(steps, na.rm = TRUE)) 
+avg %>% ggplot(aes(interval, Mean)) +
+    geom_line(col = "Purple") +
+    xlab("Time of Day (24hr time)") +
+    ylab("Average Steps") +
+    ggtitle("Average Number of Steps per Time of Day") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+The maximum average number of steps was determined using the following code.
+
+```{r}
+max(avg$Mean)
+```
+
+The interval with the maximum number of steps was determined using the code below.
+
+```{r}
+avg$interval[which(avg$Mean == max(avg$Mean))]
 ```
 
