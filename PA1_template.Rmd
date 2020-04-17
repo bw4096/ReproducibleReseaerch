@@ -1,0 +1,41 @@
+*Loading and Preprocessing the Data*
+--------------------------------------
+The data for the project was provided in a .zip file. The first step was to extract the file activity.csv.
+
+The data was then read into an R data frame using the following code.
+
+```{r}
+df <- read.csv("activity.csv")
+```
+
+
+The total number of steps per day was calculated using the following code
+```{r message=FALSE, results='hide'}
+library(tidyverse)
+```
+
+```{r}
+steps_per_day <- df %>% group_by(date) %>%
+    summarize(Steps = sum(steps))
+print(steps_per_day,n = nrow(steps_per_day))
+```
+
+Below is a histogram of the steps per day showing the frequency of the number of steps. This code was used to create the histogram.
+
+```{r warning=FALSE}
+steps_per_day %>% ggplot(aes(Steps)) +
+    geom_histogram(binwidth = 1000, col = "Black", fill = "Orange") +
+    ggtitle("Histogram of Steps per Day") + ylab("Frequency") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+The mean steps per day and the median steps per day were calculated using the following code.
+
+```{r}
+mean_steps_per_day <- steps_per_day %>% summarize(mean = mean(Steps, na.rm = TRUE))
+mean_steps_per_day
+
+median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
+median_steps_per_day
+```
+
