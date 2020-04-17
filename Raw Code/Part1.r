@@ -33,8 +33,30 @@ avg %>% ggplot(aes(interval, Mean)) +
 # Interal with maximum avg steps
 avg$interval[which(avg$Mean == max(avg$Mean))]
 
+# Number of NAs and imputing missing values
 
+sum(is.na(df$steps))
 
+# Replacing NAs with 5 minute interval average
+df1 <- transform(df, steps = ifelse(is.na(steps), avg$Mean,steps))
 
+steps_per_day <- df1 %>% group_by(date) %>%
+    summarize(Steps = sum(steps))
+steps_per_day
 
-    
+# Histogram of steps per day
+
+steps_per_day %>% ggplot(aes(Steps)) +
+    geom_histogram(binwidth = 1000, col = "Black", fill = "Orange") +
+    ggtitle("Histogram of Steps per Day") + ylab("Frequency") +
+    theme(plot.title = element_text(hjust = 0.5))
+
+# Mean and median calculation
+
+mean_steps_per_day <- steps_per_day %>% summarize(mean = mean(Steps, na.rm = TRUE))
+mean_steps_per_day
+
+median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
+median_steps_per_day
+
+ 

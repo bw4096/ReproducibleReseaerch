@@ -17,6 +17,7 @@ library(tidyverse)
 ```{r}
 steps_per_day <- df %>% group_by(date) %>%
     summarize(Steps = sum(steps))
+steps_per_day
 print(steps_per_day,n = nrow(steps_per_day))
 ```
 
@@ -61,5 +62,39 @@ The interval with the maximum number of steps was determined using the code belo
 
 ```{r}
 avg$interval[which(avg$Mean == max(avg$Mean))]
+```
+
+The total number of rows with missing steps data is calculated using the following code.
+
+```{r}
+sum(is.na(df$steps))
+```
+
+The following code replaces the NAs in the datawith the average of the appropriate 5 minute interval.
+
+```{r}
+df1 <- transform(df, steps = ifelse(is.na(steps), avg$Mean,steps))
+```
+
+The following is a histogram of steps per day
+
+```{r}
+steps_per_day <- df1 %>% group_by(date) %>%
+    summarize(Steps = sum(steps))
+steps_per_day
+steps_per_day %>% ggplot(aes(Steps)) +
+    geom_histogram(binwidth = 1000, col = "Black", fill = "Orange") +
+    ggtitle("Histogram of Steps per Day") + ylab("Frequency") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+The mean steps per day and the median steps per day were calculated using the following code.
+
+```{r}
+mean_steps_per_day <- steps_per_day %>% summarize(mean = mean(Steps, na.rm = TRUE))
+mean_steps_per_day
+
+median_steps_per_day <- steps_per_day %>% summarize(median = median(Steps,na.rm = TRUE))
+median_steps_per_day
 ```
 
